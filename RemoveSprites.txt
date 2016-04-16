@@ -1,0 +1,28 @@
+void Project4::update(float dt) {
+  bool collision = false;
+  std::list<MySprite*>::iterator pter = sprites.begin();
+  std::list<MySprite*>::iterator ptr = sprites.begin(); 
+  ++ptr;
+  (*pter)->update(dt);
+  while ( ptr != sprites.end() ) {
+    (*ptr)->update(dt);
+    if ( (*pter)->collidedRect(*ptr) ) {
+      collision = true;
+      removeChild((*pter)->getSprite()); ///////// remove sprite
+      delete *pter; ///////// remove sprite
+      pter = sprites.erase(pter); ///////// remove sprite
+    }
+    ++ptr;
+  }
+  if ( collision && !labelDrawn ) { // make label appear when collided
+    addChild(collideLabel);
+    collideLabel->release();
+    labelDrawn = true;
+
+  }
+  else if ( !collision && labelDrawn ) { // make label disappear after the collision
+    collideLabel->retain();
+    removeChild(collideLabel, 1);
+    labelDrawn = false;
+  } 
+}
